@@ -160,14 +160,21 @@ const KEY = '8fdeb9af';
 export default function App() {
   const [movies, setMovies] = useState([]);
   const [watched, setWatched] = useState([]);
-  
-  function fetchMovies() {
-    fetch(`http://www.omdbapi.com/?apikey=${KEY}&s=walking`)
-    .then(response => response.json())
-    .then(data => setMovies(data.Search))
-  }
+  const query = 'walking';
 
-  useEffect(() => fetchMovies, []);
+  async function fetchMovies() {
+    const response = await fetch(`http://www.omdbapi.com/?apikey=${KEY}&s=${query}`);
+    const data = await response.json();
+    setMovies(data.Search);
+    console.log(data.Search);
+    
+  }
+  
+  useEffect(() => {
+    fetchMovies();
+  }, []);
+
+  
 
   return (
     <>
