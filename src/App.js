@@ -160,14 +160,15 @@ const KEY = '8fdeb9af';
 export default function App() {
   const [movies, setMovies] = useState([]);
   const [watched, setWatched] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
   const query = 'walking';
 
   async function fetchMovies() {
+    setIsLoading(true);
     const response = await fetch(`http://www.omdbapi.com/?apikey=${KEY}&s=${query}`);
     const data = await response.json();
     setMovies(data.Search);
-    console.log(data.Search);
-    
+    setIsLoading(false);
   }
   
   useEffect(() => {
@@ -185,7 +186,7 @@ export default function App() {
       </NavBar>
       <Main>
         <Box>
-          <MovieList movies={movies}/>
+          {isLoading ? <Loader></Loader> : <MovieList movies={movies}/>}
         </Box>
         <Box>
           <WatchedSummary watched={watched}/>
@@ -194,6 +195,12 @@ export default function App() {
       </Main>
     </>
   );
+}
+
+function Loader() {
+  return (
+    <p className="loader">Laoding...</p>
+  )
 }
 
 function NavBar({children}) {
@@ -230,7 +237,7 @@ function Logo() {
   return (
     <div className="logo">
       <span role="img">🎬</span>
-      <h1>FlixNet</h1>
+      <h1>Skyflix</h1>
     </div>
   )
 }
