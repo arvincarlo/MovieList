@@ -162,11 +162,14 @@ export default function App() {
   const [watched, setWatched] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
-  const query = 'marvel';
+  const [query, setQuery] = useState("");
+
+  const tempQuery = 'avengers';
 
   async function fetchMovies() {
     try {
       setIsLoading(true);
+      setError("");
       const response = await fetch(`http://www.omdbapi.com/?apikey=${KEY}&s=${query}`);
       if (!response.ok) throw new Error("Something went wrong with fetching movies");
 
@@ -181,10 +184,31 @@ export default function App() {
       setIsLoading(false);
     }
   }
+
+  // useEffect(() => {
+  //   console.log('After the initial render');
+  // }, []);
+
+  // useEffect(() => {
+  //   console.log('After every render');
+  // })
+
+  // useEffect(() => function () {
+  //   // setQuery(query)
+  //   console.log("Search");
+  // }, [query])
+
+
+  
   
   useEffect(() => {
+    if (query.length < 3) {
+      setMovies([]);
+      setError('');
+      return;
+    }
     fetchMovies();
-  }, []);
+  }, [query]);
 
   
 
@@ -192,7 +216,7 @@ export default function App() {
     <>
       <NavBar>
         <Logo/>
-        <Search/>
+        <Search query={query} setQuery={setQuery}/>
         <Numresults movies={movies}/>
       </NavBar>
       <Main>
@@ -242,8 +266,7 @@ function Main({children}) {
 }
 
 
-function Search() {
-  const [query, setQuery] = useState("");
+function Search({query, setQuery}) {
   return (
     <input
       className="search"
