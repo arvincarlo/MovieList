@@ -412,12 +412,9 @@ function MovieDetails({selectedId, onCloseMovie, onAddWatched, watched}) {
   const [userRating, setUserRating] = useState('');
 
   const isWatched = watched.map(movie => movie.imdbID).includes(selectedId);
-  console.log(isWatched);
   const watchedUserRating = watched.find(movie => movie.imdbID === selectedId)?.userRating;
   // const userWatchedMovie = watched.filter(movie => movie.imdbID === selectedId);
   // const userWatchedMovieRating = Number(userWatchedMovie.at(0)?.userRating) || 0;
-  // console.log(userWatchedMovieRating);
-  // console.log(movie);
   
   
   const {
@@ -452,6 +449,13 @@ function MovieDetails({selectedId, onCloseMovie, onAddWatched, watched}) {
     
   }, [selectedId]);
 
+  useEffect(function() {
+    if (!title) return;
+    document.title = title;
+  }, [title]);
+
+  console.log(title);
+  
   function handleAdd() {
 
     const newWatchedMovie = {
@@ -489,15 +493,16 @@ function MovieDetails({selectedId, onCloseMovie, onAddWatched, watched}) {
               {!isWatched ? 
               <>
                 <StarRating maxRating={10} size={24} onSetRating={setUserRating} defaultRating={watchedUserRating}/>
-                { (userRating > 0) && <button className="btn-add" onClick={handleAdd}>+ Add to List</button>}
+                { (userRating > 0) && <button className="btn-add" onClick={handleAdd}>+ Add to Watched Movies</button>}
               </> : 
                 <p>You rated this movie {watchedUserRating} 🌟</p>
               }
             </div>
             <p><em>{plot}</em></p>
-            <p>Starring: {actors}</p>
-            <p>Directed by: {director}</p>
-            <p>🏆 Awards: </p> {movie.Awards}
+            <p>📍 <strong>Country: </strong>{movie.Country}</p>
+            <p>🕴🏼 <strong>Starring:</strong> {actors}</p>
+            <p>🎥 <strong>Directed by:</strong> {director}</p>
+            <p>🏆 <strong>Awards:</strong> {movie.Awards}</p>
           </section>
         </>
       }
