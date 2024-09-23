@@ -166,31 +166,42 @@ export default function App() {
   const [error, setError] = useState("");
   const [selectedId, setSelectedId] = useState(null);
 
-  async function fetchMovies() {
-    try {
-      setIsLoading(true);
-      setError("");
-      const response = await fetch(`http://www.omdbapi.com/?apikey=${KEY}&s=${query}`);
-      if (!response.ok) throw new Error("Something went wrong with fetching movies");
-
-      const data = await response.json();
-      if (data.Response === "False") throw new Error("Movie not found");
-      setMovies(data.Search);
-    } catch(error) {
-      setError(error.message);
-      console.warn(error.message);
-    } finally {
-      setIsLoading(false);
-    }
-  }
+  
   
   useEffect(() => {
+    const controller = new AbortController();
+
+    async function fetchMovies() {
+      try {
+        setIsLoading(true);
+        setError("");
+        const response = await fetch(`http://www.omdbapi.com/?apikey=${KEY}&s=${query}`, {signal: controller.signal});
+        if (!response.ok) throw new Error("Something went wrong with fetching movies");
+        
+        const data = await response.json();
+        if (data.Response === "False") throw new Error("Movie not found");
+        setMovies(data.Search);
+        setError("");
+      } catch(error) {
+        if (error.name !== "AbortError") setError(error.message)
+        console.warn(error.message);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    
     if (query.length < 3) {
       setMovies([]);
       setError('');
       return;
     }
+    
     fetchMovies();
+
+    // Cleanup function for fetching movies
+    return function() {
+      controller.abort();
+    }
   }, [query]);
 
   function handleSelectMovie(id) {    
@@ -452,6 +463,11 @@ function MovieDetails({selectedId, onCloseMovie, onAddWatched, watched}) {
   useEffect(function() {
     if (!title) return;
     document.title = title;
+
+    // Reset title when component unmounts (cleanup function)
+    return () => {
+      document.title = "usePopcorn"
+    }
   }, [title]);
 
   console.log(title);
