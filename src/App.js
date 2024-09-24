@@ -339,6 +339,18 @@ function MovieDetails({selectedId, onCloseMovie, onAddWatched, watched}) {
     }
   }, [onCloseMovie]);
 
+  // const [isTop, setIsTop] = useState(imdbRating > 8);
+  // console.log(isTop);
+
+  // useEffect(() => {
+  //   setIsTop(imdbRating > 8);
+  // }, [imdbRating])
+
+  // const isTop = imdbRating > 8;
+  // console.log(isTop);
+
+  const [averageRating, setAverageRating] = useState(0);
+
   function handleAdd() {
 
     const newWatchedMovie = {
@@ -353,6 +365,9 @@ function MovieDetails({selectedId, onCloseMovie, onAddWatched, watched}) {
 
     onAddWatched(newWatchedMovie);
     onCloseMovie();
+
+    // setAverageRating(Number(imdbRating));
+    // setAverageRating((averageRating) => (averageRating + userRating) / 2);
   }
   
   return (
