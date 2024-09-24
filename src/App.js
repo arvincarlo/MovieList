@@ -141,6 +141,13 @@ function Main({children}) {
 
 
 function Search({query, setQuery}) {
+
+  useEffect(() => {
+    const el = document.querySelector('.search');
+    console.log(el);
+    el.focus()
+  }, []);
+
   return (
     <input
       className="search"
@@ -361,7 +368,7 @@ function MovieDetails({selectedId, onCloseMovie, onAddWatched, watched}) {
   // const isTop = imdbRating > 8;
   // console.log(isTop);
 
-  const [averageRating, setAverageRating] = useState(0);
+  // const [averageRating, setAverageRating] = useState(0);
 
   function handleAdd() {
 
