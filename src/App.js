@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import StarRating from './StarRating';
 import { useMovies } from './useMovies';
 import { useLocalStorageState } from "./useLocalStorageState";
+import { useKey } from "./useKey";
 
 const average = (arr) =>
   arr.reduce((acc, cur, i, arr) => acc + cur / arr.length, 0);
@@ -93,30 +94,13 @@ function Main({children}) {
 
 function Search({query, setQuery}) {
 
-  // useEffect(() => {
-  //   const el = document.querySelector('.search');
-  //   console.log(el);
-  //   el.focus()
-  // }, []);
-
   const inputElement = useRef(null);
 
-  useEffect(() => {
-    function callback(e) {
-
-      if(document.activeElement === inputElement.current) return;
-
-      if(e.code === "Enter") {
-        inputElement.current.focus();
-        setQuery('');
-      }
-    }
-
-    document.addEventListener("keydown", callback);
-
-    return () => document.removeEventListener("keydown", callback);
-  }, [setQuery]);
-
+  useKey('Enter', function() {
+    if(document.activeElement === inputElement.current) return;
+    inputElement.current.focus();
+    setQuery('');
+  });
 
   return (
     <input
@@ -259,12 +243,12 @@ function MovieDetails({selectedId, onCloseMovie, onAddWatched, watched}) {
   const [isLoading, setIsLoading] = useState(false);
   const [movie, setMovie] = useState({});
   const [userRating, setUserRating] = useState('');
-
+  
   const isWatched = watched.map(movie => movie.imdbID).includes(selectedId);
   const watchedUserRating = watched.find(movie => movie.imdbID === selectedId)?.userRating;
   // const userWatchedMovie = watched.filter(movie => movie.imdbID === selectedId);
   // const userWatchedMovieRating = Number(userWatchedMovie.at(0)?.userRating) || 0;
-
+  
   const countRef = useRef(0);
   
   const {
@@ -283,6 +267,9 @@ function MovieDetails({selectedId, onCloseMovie, onAddWatched, watched}) {
   /* eslint-disable */
   // if (imdbRating > 8) return <p>Greatest Ever!</p>;
 
+  // useKey - listening to keypress
+  useKey('Escape', onCloseMovie);
+  
   // Ref for the movie counts
   useEffect(() => {
     if (userRating) {
@@ -291,7 +278,7 @@ function MovieDetails({selectedId, onCloseMovie, onAddWatched, watched}) {
   }, [userRating]);
   
   useEffect(function() {
-      async function getMovieDetails() {
+    async function getMovieDetails() {
         try {
           setIsLoading(true);
           const response = await fetch(`http://www.omdbapi.com/?apikey=${KEY}&i=${selectedId}`);
@@ -319,34 +306,6 @@ function MovieDetails({selectedId, onCloseMovie, onAddWatched, watched}) {
       console.log('Cleanup effect for movie ' + title);
     }
   }, [title]);
-
-  // Closing the movie component when user press the escape key
-  useEffect(function() {
-    function callback(e) {
-      if (e.code === 'Escape') {
-        onCloseMovie();
-        console.log('CLOSEING');
-      }
-    }
-
-    document.addEventListener('keydown', callback);
-
-    return function() {
-      document.removeEventListener('keydown', callback);
-    }
-  }, [onCloseMovie]);
-
-  // const [isTop, setIsTop] = useState(imdbRating > 8);
-  // console.log(isTop);
-
-  // useEffect(() => {
-  //   setIsTop(imdbRating > 8);
-  // }, [imdbRating])
-
-  // const isTop = imdbRating > 8;
-  // console.log(isTop);
-
-  // const [averageRating, setAverageRating] = useState(0);
 
   function handleAdd() {
 
