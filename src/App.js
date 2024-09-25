@@ -163,7 +163,7 @@ function Search({query, setQuery}) {
 
     document.addEventListener("keydown", callback);
 
-    return () => document.addEventListener("keydown", callback);
+    return () => document.removeEventListener("keydown", callback);
   }, [setQuery]);
 
 
@@ -263,7 +263,7 @@ function WatchedSummary({watched}) {
         </p>
         <p>
           <span>⏳</span>
-          <span>{avgRuntime} min</span>
+          <span>{avgRuntime.toFixed(2)} min</span>
         </p>
       </div>
     </div>
@@ -313,8 +313,8 @@ function MovieDetails({selectedId, onCloseMovie, onAddWatched, watched}) {
   const watchedUserRating = watched.find(movie => movie.imdbID === selectedId)?.userRating;
   // const userWatchedMovie = watched.filter(movie => movie.imdbID === selectedId);
   // const userWatchedMovieRating = Number(userWatchedMovie.at(0)?.userRating) || 0;
-  
 
+  const countRef = useRef(0);
   
   const {
     Title: title,
@@ -331,6 +331,13 @@ function MovieDetails({selectedId, onCloseMovie, onAddWatched, watched}) {
   
   /* eslint-disable */
   // if (imdbRating > 8) return <p>Greatest Ever!</p>;
+
+  // Ref for the movie counts
+  useEffect(() => {
+    if (userRating) {
+      countRef.current = countRef.current + 1;
+    }
+  }, [userRating]);
   
   useEffect(function() {
       async function getMovieDetails() {
@@ -399,7 +406,8 @@ function MovieDetails({selectedId, onCloseMovie, onAddWatched, watched}) {
       poster, 
       imdbRating: Number(imdbRating),
       runtime: Number(runtime.split(" ").at(0)),
-      userRating: userRating
+      userRating: userRating,
+      countRatingDecisions: countRef.current
     }
 
     onAddWatched(newWatchedMovie);
