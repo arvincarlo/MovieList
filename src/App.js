@@ -261,8 +261,11 @@ function MovieDetails({selectedId, onCloseMovie, onAddWatched, watched}) {
     Actors: actors,
     Director: director,
     Genre: genre,
-    imdbRating
+    imdbRating,
+    Type: type
   } = movie;
+
+  console.log(type);
   
   /* eslint-disable */
   // if (imdbRating > 8) return <p>Greatest Ever!</p>;
@@ -358,6 +361,7 @@ function MovieDetails({selectedId, onCloseMovie, onAddWatched, watched}) {
             <p>🕴🏼 <strong>Starring:</strong> {actors}</p>
             <p>🎥 <strong>Directed by:</strong> {director}</p>
             <p>🏆 <strong>Awards:</strong> {movie.Awards}</p>
+            <p>📺 <strong>Type: </strong> {type}</p>
           </section>
         </>
       }
