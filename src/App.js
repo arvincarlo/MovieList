@@ -31,6 +31,7 @@ export default function App() {
     setWatched(watched => watched.filter((movie) => movie.imdbID !== id));
   }
 
+
   return (
     <>
       <NavBar>
@@ -42,6 +43,7 @@ export default function App() {
         <Box>
           {/* {isLoading ? <Loader></Loader> : <MovieList movies={movies}/>} */}
           { isLoading && <Loader /> }
+          { !movies.length && <ErrorMessage message="No Movies found. Please start by searching."/>}
           { !isLoading && !error && <MovieList movies={movies} onSelectMovie={handleSelectMovie}/> }
           { error && <ErrorMessage message={error}></ErrorMessage> }
         </Box>
@@ -140,7 +142,7 @@ function Box({children}) {
         className="btn-toggle"
         onClick={() => setIsOpen((open) => !open)}
       >
-        {isOpen ? "–" : "+"}
+        {isOpen ? "➖" : "➕"}
       </button>
       {isOpen && (
         children
@@ -336,7 +338,7 @@ function MovieDetails({selectedId, onCloseMovie, onAddWatched, watched}) {
         isLoading ? <Loader /> : 
         <>
           <header>
-            <button className="btn-back" onClick={onCloseMovie}>&larr;</button>
+            <button className="btn-back" onClick={onCloseMovie}>❌</button>
             <img src={poster} alt={`Poster of ${movie} movie`}></img>
             <div className="details-overview">
               <h2>{title}</h2>
