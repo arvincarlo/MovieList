@@ -286,7 +286,7 @@ function MovieDetails({selectedId, onCloseMovie, onAddWatched, watched}) {
     async function getMovieDetails() {
         try {
           setIsLoading(true);
-          const response = await fetch(`http://www.omdbapi.com/?apikey=${KEY}&i=${selectedId}`);
+          const response = await fetch(`https://www.omdbapi.com/?apikey=${KEY}&i=${selectedId}`);
           if (!response.ok) throw new Error("Something went wrong with fetching movie details");
           const data = await response.json();
           if (data.length <= 0) throw new Error("Something went wrong with fetching movie details");
